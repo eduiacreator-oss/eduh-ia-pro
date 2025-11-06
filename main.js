@@ -1,33 +1,57 @@
-const form = document.getElementById("chat-form");
-const input = document.getElementById("user-input");
-const chatBox = document.getElementById("chat-box");
+const startBtn = document.getElementById('startBtn');
+const chatArea = document.getElementById('chatArea');
+const chatWindow = document.getElementById('chatWindow');
+const input = document.getElementById('chatInput');
+const sendBtn = document.getElementById('sendBtn');
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const message = input.value.trim();
-  if (!message) return;
-
-  addMessage("user", message);
-  input.value = "";
-  addMessage("bot", "Digitando... ⏳");
-
-  try {
-    const response = await fetch("http://localhost:3000/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
-    });
-    const data = await response.json();
-    chatBox.lastChild.textContent = data.reply;
-  } catch (error) {
-    chatBox.lastChild.textContent = "⚠️ Erro ao conectar com o servidor.";
-  }
+startBtn.addEventListener('click', ()=>{
+  chatArea.classList.remove('hidden');
+  window.scrollTo(0,document.body.scrollHeight);
 });
 
-function addMessage(sender, text) {
-  const div = document.createElement("div");
-  div.classList.add(sender);
-  div.textContent = text;
-  chatBox.appendChild(div);
-  chatBox.scrollTop = chatBox.scrollHeight;
+// helper para adicionar mensagem
+function addMsg(text, who='bot'){
+  const d = document.createElement('div');
+  d.className = 'msg ' + (who==='user'?'user':'bot');
+  d.textContent = text;
+  chatWindow.appendChild(d);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
 }
+
+// simula "digitando" (anima)
+function addTyping(){
+  const t = document.createElement('div');
+  t.className = 'msg bot typing';
+  t.id = 'typing';
+  t.textContent = 'Digitando...';
+  chatWindow.appendChild(t);
+  chatWindow.scrollTop = chatWindow.scrollHeight;
+}
+
+function removeTyping(){
+  const t = document.getElementById('typing');
+  if(t) t.remove();
+}
+
+async function sendMessage(msg){
+  addMsg(msg,'user');
+  input.value = '';
+  addTyping();
+  try{
+    const res = await fetch('/.netlify/functions/chat', {
+      method:'POST',
+      headers:{ 'Content-Type':'application/json' },
+      body: JSON.stringify({ prompt: msg })
+    });
+    const json = await res.json();
+    removeTyping();
+    if(json && json.reply) addMsg(json.reply,'bot');
+    else addMsg('Erro: sem resposta do servidor','bot');
+  }catch(e){
+    removeTyping();
+    addMsg('Erro na conexão: '+e.message,'bot');
+  }
+}
+
+sendBtn.addEventListener('click', ()=>{ const v=input.value.trim(); if(!v) return; sendMessage(v);});
+input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendBtn.click(); }});

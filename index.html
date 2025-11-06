@@ -1,20 +1,50 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Eduh IA Pro</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='64' height='64'><rect width='100%' height='100%' fill='%23000'/><text x='50%' y='50%' fill='white' font-size='36' font-weight='700' text-anchor='middle' dominant-baseline='middle' font-family='Arial'>E</text></svg>">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="chat-container">
-    <h1>🤖 Eduh IA Pro</h1>
-    <div class="chat-box" id="chat-box"></div>
-    <form id="chat-form">
-      <input type="text" id="user-input" placeholder="Digite sua mensagem..." autocomplete="off" />
-      <button type="submit">Enviar</button>
-    </form>
-  </div>
+  <header class="topbar">
+    <div class="logo-wrap">
+      <div class="logo-e">E</div>
+      <h1>Eduh IA Pro</h1>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="card intro">
+      <div class="description">
+        <!-- 350 palavras abaixo -->
+        <p>
+Eduh IA Pro é uma assistente virtual avançada projetada para transformar tarefas criativas e profissionais em processos simples e rápidos. Alimentada por um modelo de linguagem de última geração, a plataforma entende intenções complexas, produz textos naturais, cria roteiros, resumos, traduções, planos de estudo e materiais de marketing com alta qualidade. Ideal para empreendedores, criadores de conteúdo, estudantes e equipes, o Eduh IA Pro automatiza ideias, oferece sugestões contextualizadas e gera saídas que exigem pouca edição humana. O sistema também auxilia na criação de código, montagem de documentos, elaboração de roteiros para vídeos e otimização de SEO. Com opções de personalização de tom e estilo, você define se quer respostas formais, descontraídas ou persuasivas; a IA adequa o vocabulário sem repetições desnecessárias. Além disso, o Eduh IA Pro organiza tarefas, cria listas e cronogramas, e responde a perguntas técnicas com referências claras. A privacidade e segurança dos dados são prioridades: a comunicação com os modelos acontece via servidor seguro e chaves privadas armazenadas em variáveis de ambiente. O produto foi pensado para ser leve e responsivo — funciona em mobile, desktop e como PWA. Em resumo, Eduh IA Pro é sua ferramenta multifuncional para poupar tempo, aumentar produtividade e elevar a qualidade do conteúdo — tudo com uma interface elegante em preto e azul celeste.
+        </p>
+      </div>
+
+      <div class="cta">
+        <button id="startBtn" class="btn-start">Começar</button>
+      </div>
+    </section>
+
+    <section class="card chat-area hidden" id="chatArea">
+      <div class="chat-window" id="chatWindow"></div>
+
+      <div class="chat-input">
+        <input id="chatInput" placeholder="Digite sua mensagem..." autocomplete="off"/>
+        <button id="sendBtn" class="btn-send">Enviar</button>
+      </div>
+    </section>
+
+    <footer class="footer-links">
+      <a href="privacidade.html">Privacidade</a> •
+      <a href="termos.html">Termos</a> •
+      <a href="contato.html">Contato</a>
+    </footer>
+  </main>
+
   <script src="main.js"></script>
 </body>
 </html>
