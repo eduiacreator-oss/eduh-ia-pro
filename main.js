@@ -1,57 +1,80 @@
-const startBtn = document.getElementById('startBtn');
-const chatArea = document.getElementById('chatArea');
-const chatWindow = document.getElementById('chatWindow');
-const input = document.getElementById('chatInput');
-const sendBtn = document.getElementById('sendBtn');
+// ======= EDUH IA PRO - MAIN.JS ======= //
 
-startBtn.addEventListener('click', ()=>{
-  chatArea.classList.remove('hidden');
-  window.scrollTo(0,document.body.scrollHeight);
-});
+// Elementos principais
+const chatForm = document.getElementById("chatForm");
+const userInput = document.getElementById("userInput");
+const chatBox = document.getElementById("chatBox");
+const statusIndicator = document.getElementById("status-indicator");
 
-// helper para adicionar mensagem
-function addMsg(text, who='bot'){
-  const d = document.createElement('div');
-  d.className = 'msg ' + (who==='user'?'user':'bot');
-  d.textContent = text;
-  chatWindow.appendChild(d);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-// simula "digitando" (anima)
-function addTyping(){
-  const t = document.createElement('div');
-  t.className = 'msg bot typing';
-  t.id = 'typing';
-  t.textContent = 'Digitando...';
-  chatWindow.appendChild(t);
-  chatWindow.scrollTop = chatWindow.scrollHeight;
-}
-
-function removeTyping(){
-  const t = document.getElementById('typing');
-  if(t) t.remove();
-}
-
-async function sendMessage(msg){
-  addMsg(msg,'user');
-  input.value = '';
-  addTyping();
-  try{
-    const res = await fetch('/.netlify/functions/chat', {
-      method:'POST',
-      headers:{ 'Content-Type':'application/json' },
-      body: JSON.stringify({ prompt: msg })
+// Função: verificar status do servidor / IA
+async function verificarStatus() {
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "ping" }),
     });
-    const json = await res.json();
-    removeTyping();
-    if(json && json.reply) addMsg(json.reply,'bot');
-    else addMsg('Erro: sem resposta do servidor','bot');
-  }catch(e){
-    removeTyping();
-    addMsg('Erro na conexão: '+e.message,'bot');
+
+    if (res.ok) {
+      statusIndicator.textContent = "🟢 Eduh IA Pro: Online";
+      statusIndicator.classList.remove("offline");
+      statusIndicator.classList.add("online");
+    } else {
+      throw new Error("Servidor respondeu com erro");
+    }
+  } catch (err) {
+    statusIndicator.textContent = "🔴 Eduh IA Pro: Offline";
+    statusIndicator.classList.remove("online");
+    statusIndicator.classList.add("offline");
   }
 }
 
-sendBtn.addEventListener('click', ()=>{ const v=input.value.trim(); if(!v) return; sendMessage(v);});
-input.addEventListener('keydown', (e)=>{ if(e.key==='Enter'){ e.preventDefault(); sendBtn.click(); }});
+// Checa o status da IA a cada 15 segundos
+setInterval(verificarStatus, 15000);
+verificarStatus();
+
+// Função para adicionar mensagens ao chat
+function addMessage(content, sender) {
+  const msg = document.createElement("div");
+  msg.classList.add("message", sender);
+  msg.textContent = content;
+  chatBox.appendChild(msg);
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// Envio do formulário
+chatForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const userMessage = userInput.value.trim();
+  if (!userMessage) return;
+
+  // Mostra mensagem do usuário
+  addMessage(userMessage, "user");
+  userInput.value = "";
+
+  // Mostra IA digitando
+  const typing = document.createElement("div");
+  typing.classList.add("message", "bot");
+  typing.textContent = "💬 Digitando...";
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage }),
+    });
+
+    if (!res.ok) {
+      throw new Error("Erro ao conectar com a IA.");
+    }
+
+    const data = await res.json();
+    typing.remove();
+    addMessage(data.reply || "⚠️ Erro na resposta da IA.", "bot");
+  } catch (error) {
+    typing.remove();
+    addMessage("⚠️ Erro ao conectar com o servidor da IA.", "bot");
+  }
+});

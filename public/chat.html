@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat – Eduh IA Pro</title>
+  <style>
+    body { background:#000; color:#aee4ff; font-family:"Segoe UI",sans-serif; text-align:center; }
+    h1 { color:#aee4ff; margin-top:20px; }
+    #chat-box { width:90%; max-width:700px; margin:30px auto; border:1px solid #4cc9f0; padding:15px; border-radius:8px; background:#111; text-align:left; }
+    #messages { height:300px; overflow-y:auto; border:1px solid #4cc9f0; padding:10px; background:#000; color:#aee4ff; }
+    input { width:70%; padding:10px; border:1px solid #4cc9f0; background:#000; color:#aee4ff; }
+    button { background:#4cc9f0; color:#000; border:none; padding:10px 20px; margin-left:5px; border-radius:5px; cursor:pointer; font-weight:bold; }
+    a { color:#8bd3ff; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <h1>💬 Eduh IA Pro – Chat</h1>
+  <div id="chat-box">
+    <div id="messages"></div>
+    <input type="text" id="user-input" placeholder="Digite sua mensagem..." />
+    <button onclick="enviar()">Enviar</button>
+  </div>
+  <p><a href="index.html">⬅ Voltar</a></p>
+
+  <script>
+    async function enviar() {
+      const input = document.getElementById("user-input");
+      const texto = input.value.trim();
+      if (!texto) return;
+      const box = document.getElementById("messages");
+      box.innerHTML += `<div><b>Você:</b> ${texto}</div>`;
+      input.value = "";
+      try {
+        const resp = await fetch("/api/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: texto })
+        });
+        const data = await resp.json();
+        box.innerHTML += `<div><b>Eduh IA Pro:</b> ${data.reply}</div>`;
+      } catch {
+        box.innerHTML += `<div><b>Erro:</b> conexão falhou.</div>`;
+      }
+    }
+  </script>
+</body>
+</html>

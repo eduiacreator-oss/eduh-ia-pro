@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eduh IA Pro – Sua Inteligência Artificial</title>
+  <style>
+    body { background:#000; color:#aee4ff; font-family:"Segoe UI",sans-serif; text-align:center; padding:0; margin:0; }
+    header { border-bottom:1px solid #4cc9f0; padding:15px; }
+    h1 { color:#aee4ff; margin:0; }
+    main { max-width:800px; margin:auto; text-align:justify; padding:20px; line-height:1.6; }
+    button { background:#4cc9f0; color:#000; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; font-weight:bold; margin-top:20px; }
+    button:hover { background:#38bdf8; }
+    footer { margin-top:30px; font-size:14px; color:#8bd3ff; }
+    a { color:#8bd3ff; text-decoration:none; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>🤖 Eduh IA Pro</h1>
+    <p>Status: <span id="status-dot">🔴 Offline</span></p>
+  </header>
+
+  <main>
+    <h2>Bem-vindo ao Eduh IA Pro – sua inteligência artificial pessoal</h2>
+    <p>
+      O <b>Eduh IA Pro</b> é um assistente virtual desenvolvido com base em modelos de linguagem avançados da família <b>GPT-4 Mini</b>, 
+      projetado para compreender, conversar e auxiliar em qualquer tipo de tarefa textual. Ele pode gerar ideias criativas, ajudar em 
+      redações, programar códigos, resumir textos, traduzir idiomas, criar roteiros, elaborar mensagens profissionais e muito mais.
+    </p>
+    <p>
+      Essa IA é rápida, segura e privada, ajustada para evitar repetições e manter clareza em suas respostas. Ela entende o contexto da conversa e 
+      adapta o tom conforme o tipo de usuário, seja para estudos, trabalho ou lazer.
+    </p>
+    <p>
+      Clique abaixo para acessar o chat interativo e conversar com o <b>Eduh IA Pro</b> em tempo real.
+    </p>
+    <button onclick="window.location.href='chat.html'">💬 Ir para o Chat</button>
+  </main>
+
+  <footer>
+    <p><a href="privacidade.html">Privacidade</a> | <a href="termos.html">Termos</a> | <a href="contato.html">Contato</a></p>
+    <p>© 2025 Eduh IA Pro – Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    window.onload = () => {
+      fetch("/api/status")
+        .then(r => r.json())
+        .then(d => { document.getElementById("status-dot").innerText = d.online ? "🟢 Online" : "🔴 Offline"; });
+    };
+  </script>
+</body>
+</html>

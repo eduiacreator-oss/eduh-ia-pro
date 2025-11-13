@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Eduh IA Pro</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Poppins", sans-serif;
+      background: linear-gradient(135deg, #00b7ff, #0077ff);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .chat-container {
+      width: 90%;
+      max-width: 400px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      overflow: hidden;
+      color: white;
+    }
+
+    /* === CABEÇALHO DO CHAT === */
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background-color: #0099ff;
+      color: white;
+      padding: 12px;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #00ff00; /* Online */
+      box-shadow: 0 0 8px #00ff00;
+      transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+    .offline {
+      background-color: #ff0000 !important;
+      box-shadow: 0 0 8px #ff0000;
+    }
+
+    /* === ÁREA DE MENSAGENS === */
+    .chat-box {
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .message {
+      background: rgba(255,255,255,0.2);
+      padding: 10px 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .message strong {
+      color: #fff;
+    }
+
+    /* === INPUT === */
+    .input-area {
+      display: flex;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.15);
+      border-top: 1px solid rgba(255,255,255,0.2);
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      outline: none;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .input-area button {
+      margin-left: 10px;
+      background: #00aaff;
+      border: none;
+      border-radius: 8px;
+      color: white;
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .input-area button:hover {
+      background: #0088cc;
+    }
+
+    .chat-footer {
+      text-align: center;
+      padding: 8px;
+      font-size: 12px;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .chat-footer a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 5px;
+    }
+
+    .chat-footer a:hover {
+      text-decoration: underline;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="chat-container">
+    <!-- Cabeçalho com Status -->
+    <div class="chat-header">
+      <div class="status-indicator" id="status-indicator"></div>
+      <span class="chat-title">Eduh IA Pro</span>
+      <span id="status-text">Online</span>
+    </div>
+
+    <!-- Caixa de Mensagens -->
+    <div class="chat-box" id="chat-box">
+      <div class="message">
+        👋 <strong>Olá!</strong> Eu sou a Eduh IA Pro — sua assistente virtual.  
+        Como posso te ajudar hoje?
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div class="input-area">
+      <input type="text" id="user-input" placeholder="Digite sua mensagem...">
+      <button id="send-btn">Enviar</button>
+    </div>
+
+    <!-- Rodapé -->
+    <div class="chat-footer">
+      <a href="index.html">Início</a> • 
+      <a href="privacidade.html">Privacidade</a> • 
+      <a href="termos.html">Termos</a>
+    </div>
+  </div>
+
+  <!-- === SCRIPT === -->
+  <script>
+    const statusIndicator = document.getElementById('status-indicator');
+    const statusText = document.getElementById('status-text');
+    const chatBox = document.getElementById('chat-box');
+    const userInput = document.getElementById('user-input');
+    const sendBtn = document.getElementById('send-btn');
+
+    // Função para atualizar status
+    function updateStatus() {
+      if (navigator.onLine) {
+        statusIndicator.classList.remove('offline');
+        statusText.textContent = 'Online';
+      } else {
+        statusIndicator.classList.add('offline');
+        statusText.textContent = 'Offline';
+      }
+    }
+
+    // Detecta alterações de conexão
+    window.addEventListener('online', updateStatus);
+    window.addEventListener('offline', updateStatus);
+    updateStatus();
+
+    // Enviar mensagem
+    sendBtn.addEventListener('click', sendMessage);
+    userInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    function sendMessage() {
+      const message = userInput.value.trim();
+      if (message === "") return;
+
+      const userMsg = document.createElement('div');
+      userMsg.classList.add('message');
+      userMsg.innerHTML = `<strong>Você:</strong> ${message}`;
+      chatBox.appendChild(userMsg);
+
+      userInput.value = "";
+
+      // Resposta simulada
+      setTimeout(() => {
+        const botMsg = document.createElement('div');
+        botMsg.classList.add('message');
+        botMsg.innerHTML = `<strong>Eduh IA Pro:</strong> Entendi! 😊 (isso é uma resposta de teste)`;
+        chatBox.appendChild(botMsg);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
